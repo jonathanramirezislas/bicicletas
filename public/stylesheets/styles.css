@@ -48,6 +48,20 @@
   box-sizing: border-box;
 }
 
+ .google-maps {
+  position: relative;
+  padding-bottom: 75%;
+  height: 0;
+  overflow: hidden;
+}
+.google-maps iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
 html {
   font-family: sans-serif;
   line-height: 1.15;
@@ -158,6 +172,7 @@ sub {
 sup {
   top: -0.5em;
 }
+
 
 a {
   color: #64a19d;
