@@ -35,9 +35,13 @@ describe('Bicicleta.findById', () => {
         Bicicleta.add(aBici2);//adding a bicicleta
 
         var targetBici = Bicicleta.findById(1);
-        expect(targetBici.id).toBe(1);
-        expect(targetBici.color).toBe(aBici.color);
-        expect(targetBici.modelo).toBe(aBici.modelo);
+        expect(response.status).toBe(200);
+        let bici = response.data.bicicleta
+        expect(bici.code).toBe(10)
+        expect(bici.color).toBe(aBici.color)
+        expect(bici.modelo).toBe(aBici.modelo)
+        expect(bici.ubicacion[0]).toBe(Number(aBici.lat))
+        expect(bici.ubicacion[1]).toBe(Number(aBici.lng))
 
     });
 });

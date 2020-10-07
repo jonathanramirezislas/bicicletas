@@ -40,4 +40,6 @@ var b =new Bicicleta(2,'azul','urbana', [21.854485, -102.260135])
 Bicicleta.add(a);
 Bicicleta.add(b);
 */
+
+
 module.exports= Bicicleta;
