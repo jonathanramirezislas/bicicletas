@@ -1,3 +1,5 @@
+
+
 var Bicicleta = require('../../models/bicicleta');
 var request = require('request');// library 
 
@@ -12,8 +14,6 @@ describe(' Bicicleta API', () =>{
 
             var a =new Bicicleta(1,'rojo','urbana', [21.844862, -102.254499]);
             Bicicleta.add(a);//adding a bicicleta
-
-
             request.get('http://localhost:3000/api/bicicletas',function(error, response, body){
                 expect(response.statusCode).toBe(200);
             });
