@@ -1,26 +1,25 @@
 var mongoose = require('mongoose');
 const Bicicleta = require('../../models/bicicleta');
 
-
+//mongodb://localhost/testdb  <-- Datbase for Test purpose
 describe('Testing Bicicletas', function(){
+
     beforeEach(function(done){
-
         setTimeout(function() {
-
+          //Connection to the Database (Test Database)
             var mongoDB = 'mongodb://localhost/testdb'
             mongoose.connect(mongoDB, { useNewUrlParser: true})
-        
             const db = mongoose.connection;
             db.on('error', console.error.bind(console, 'connection error'));
             db.once('open', function(){
-              console.log('We are connected to test database!');
+            console.log('We are connected to test database!');
             });
             done();// es par terminar el beforeEach de otra manera no terminaria el metodo
           }, 100);
-        
-     
     });
-  
+
+    //after is call each in each Test
+  //Delete everthing from test Database
     afterEach(function(done){
       Bicicleta.deleteMany({}, function(err, success){
         done(); 
@@ -29,7 +28,7 @@ describe('Testing Bicicletas', function(){
     });
   
 
-    //Test 
+    //Test when we create a Instance
     describe('Bicicleta.createInstance', () => {
       it('crea una instancia de Bicicleta', () => {
         var bici = Bicicleta.createInstance(1,"verde","urbana", [-34.5, -54.1]);
@@ -41,10 +40,13 @@ describe('Testing Bicicletas', function(){
         expect(bici.ubicacion[1]).toEqual(-54.1);
       });
     });
+
+    //test to get all Bicis
     describe('Bicicleta.allBicis', () => {
       it('comienza vacia', (done)  => {
+                         //pass a function (callback)
         Bicicleta.allBicis(function(err, bicis){
-          expect(bicis.length).toBe(0);
+          expect(bicis.length).toBe(0);//has to be empty at the begining
           done();
         });
       });
@@ -55,10 +57,11 @@ describe('Testing Bicicletas', function(){
         var aBici = new Bicicleta({code: 1, color:"verde", modelo:"urbana"});
         Bicicleta.add(aBici, function(err, newBici){
           if ( err ) console.log(err);
+          //Here we are inside the callback , the adding(bicicleta) has just happend
           Bicicleta.allBicis(function(err, bicis){
-            expect(bicis.length).toEqual(1);
-            expect(bicis[0].code).toEqual(aBici.code);
-            done();
+            expect(bicis.length).toEqual(1);//make sure taht we add a bicicleta
+            expect(bicis[0].code).toEqual(aBici.code);//make sure was added the bicicleta correctly
+            done(); //is used to solve problems of asynchronism
           });
         });
       });    
@@ -67,14 +70,19 @@ describe('Testing Bicicletas', function(){
     describe('Bicicleta.findByCode', () => {
         it('debe de devolver la bici con code 1', (done) => {
           Bicicleta.allBicis(function(err, bicis){
-            expect(bicis.length).toBe(0);
+            expect(bicis.length).toBe(0); // We use expect here becaouse in each test  we delete the data from test database so data has to be empty
     
+            //we add a bicicleta 
             var aBici = new Bicicleta({code: 1, color: "verde", modelo:"urbana"});
-            Bicicleta.add(aBici, function(err, newBici){
+             Bicicleta.add(aBici, function(err, newBici){
               if (err) console.log(err);
+            
+              //we add a second bicicleta 
               var aBici2 = new Bicicleta({code:2, color: "roja", modelo:"deportiva"});
               Bicicleta.add(aBici2, function(err, newBici){
                 if (err) console.log(err);
+
+                //test if we add correectly the first bicicleta added
                 Bicicleta.findByCode(1, function(error, targetBici){
                   expect(targetBici.code).toBe(aBici.code);
                   expect(targetBici.color).toBe(aBici.color);
@@ -91,51 +99,3 @@ describe('Testing Bicicletas', function(){
 
 
   });
-
-/*
-beforeEach(() => {Bicicleta.allBicis = [];}); //this method is executed in each espec IN ORDER TO CLEAN THE Bicis
-
-//the list of Bicicletas has to start empty 
-describe('Bicicleta.allBicis', () => {
-    it('comienza vacio', () => {
-        expect(Bicicleta.allBicis.length).toBe(0);
-    });
-});
-
-//the list of Bicicletas has to start empty 
-describe('Bicicleta.add', () => {
-    it('Agregamos un bicicleta', () => {
-        expect(Bicicleta.allBicis.length).toBe(0);
-
-        var a =new Bicicleta(1,'rojo','urbana', [21.844862, -102.254499])
-        Bicicleta.add(a);//adding a bicicleta
-
-        expect(Bicicleta.allBicis.length).toBe(1);//se agrega un elemento 
-        expect(Bicicleta.allBicis[0]).toBe(a);//the first position has to be the bicicleta that we added
-    });
-});
-
-//the list of Bicicletas has to start empty 
-describe('Bicicleta.findById', () => {
-    it('Debe devolver la bici con id ', () => {
-
-        expect(Bicicleta.allBicis.length).toBe(0);
-
-        var aBici =new Bicicleta(1,'rojo','urbana', [21.844862, -102.254499])
-        var aBici2 =new Bicicleta(1,'azul','montaña', [21.844862, -102.254499])
-
-        Bicicleta.add(aBici);//adding a bicicleta
-        Bicicleta.add(aBici2);//adding a bicicleta
-
-        var targetBici = Bicicleta.findById(1);
-        expect(response.status).toBe(200);
-        let bici = response.data.bicicleta
-        expect(bici.code).toBe(10)
-        expect(bici.color).toBe(aBici.color)
-        expect(bici.modelo).toBe(aBici.modelo)
-        expect(bici.ubicacion[0]).toBe(Number(aBici.lat))
-        expect(bici.ubicacion[1]).toBe(Number(aBici.lng))
-
-    });
-});
-*/
