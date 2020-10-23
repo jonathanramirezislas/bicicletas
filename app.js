@@ -10,6 +10,8 @@ var bicicletasRouter = require('./routes/bicicletas');
 var bicicletasAPIRouter = require('./routes/api/bicicletas');
 var usuariosAPIRouter = require('./routes/api/usuarios');
 
+const usuariosRouter = require('./routes/usuarios');
+const tokenRouter = require('./routes/token');
 
 var app = express();
 const mongoose = require('mongoose');
@@ -41,6 +43,9 @@ app.use('/usuarios', usuariosRouter);
 app.use('/bicicletas', bicicletasRouter);
 app.use('/api/bicicletas', bicicletasAPIRouter);
 app.use('/api/usuarios', usuariosAPIRouter);
+
+app.use('/usuarios', usuariosRouter);
+app.use('/token', tokenRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

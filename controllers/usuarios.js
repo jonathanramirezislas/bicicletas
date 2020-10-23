@@ -1,6 +1,7 @@
 var Usuario = require('../models/usuario');
 
 module.exports = {
+  //  List we extract all Users
   list: function (req, res, next) {
     Usuario.find({}, (err, usuarios) => {
       let data = {
@@ -13,21 +14,32 @@ module.exports = {
       res.render('usuarios/index', data)
     })
   },
+  //We get the user by its Id. 
   update_get: function (req, res, next) {
+    //pass the id to the function findByiD(Mongo) & cllback
+    //err is empty we pass this paaram because in the View is needed.
     Usuario.findById(req.params.id, (err, usuario) => {
+      //We render the View and pass the params
       res.render('usuario/update', {
         errors: {},
         usuario
       })
     })
   },
+
+
+  //Update a User
   update: function (req, res, next) {
-    var update_values = {
-      nombre: req.body.nombre
-    };
+//Get the name from params
+    var update_values = { nombre: req.body.nombre};
+/*findByIdAndUpdate (operation mongo)
+we pass the id the user taht we want to update and the new values
+
+*/
     Usuario.findByIdAndUpdate(req.params.id, update_values, {
       new: true
     }, (err, usuario) => {
+      //if there is a error we render the View with a error
       if (err) {
         console.log(err);
         res.render('usuarios/update', {
@@ -35,6 +47,7 @@ module.exports = {
           usuario
         })
       } else {
+        //If everthing is Ok we render to users
         res.redirect('usuarios');
         return;
       }
@@ -47,13 +60,16 @@ module.exports = {
     });
   },
   create: function (req, res, next) {
+    //If the two password are not equals set the error
     if (req.body.password != req.body.confirm_password) {
+      //we render the View with the error
       res.render('usuarios/create', {
         errors: {
           confirm_password: {
             message: 'No conciden las contraseñas'
           }
         },
+        //We retun back the user that he wanted add
         usuario: new Usuario({
           nombre: req.body.nombre,
           email: req.body.email
