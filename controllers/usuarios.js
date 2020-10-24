@@ -14,15 +14,16 @@ module.exports = {
       res.render('usuarios/index', data)
     })
   },
+
   //We get the user by its Id. 
   update_get: function (req, res, next) {
     //pass the id to the function findByiD(Mongo) & cllback
     //err is empty we pass this paaram because in the View is needed.
     Usuario.findById(req.params.id, (err, usuario) => {
       //We render the View and pass the params
-      res.render('usuario/update', {
+      res.render('usuarios/update', {
         errors: {},
-        usuario
+        usuario: usuario
       })
     })
   },
@@ -33,9 +34,7 @@ we pass the id the user taht we want to update and the new values
 */
   update: function (req, res, next) {
     var update_values = { nombre: req.body.nombre};
-    Usuario.findByIdAndUpdate(req.params.id, update_values, {
-      new: true
-    }, (err, usuario) => {
+    Usuario.findByIdAndUpdate(req.params.id, update_values, (err, usuario) => {
       //if there is a error we render the View with a error
       if (err) {
         console.log(err);
@@ -45,7 +44,7 @@ we pass the id the user taht we want to update and the new values
         })
       } else {
         //If everthing is Ok we render to users
-        res.redirect('usuarios');
+        res.redirect('/usuarios');
         return;
       }
     })
@@ -86,8 +85,8 @@ we pass the id the user taht we want to update and the new values
           usuario: new Usuario()
         })
       } else {
-        //we send a email of welcom
-       // nuevoUsuario.enviar_email_bienvenida();
+        //we send a email of welcom 
+     //   nuevoUsuario.enviar_email_bienvenida(); //CREATE A ERROR
         res.redirect('/usuarios');
       }
     })
