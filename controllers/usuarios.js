@@ -27,15 +27,12 @@ module.exports = {
     })
   },
 
-
-  //Update a User
-  update: function (req, res, next) {
-//Get the name from params
-    var update_values = { nombre: req.body.nombre};
+ //Update a User
 /*findByIdAndUpdate (operation mongo)
 we pass the id the user taht we want to update and the new values
-
 */
+  update: function (req, res, next) {
+    var update_values = { nombre: req.body.nombre};
     Usuario.findByIdAndUpdate(req.params.id, update_values, {
       new: true
     }, (err, usuario) => {
@@ -69,7 +66,7 @@ we pass the id the user taht we want to update and the new values
             message: 'No conciden las contraseñas'
           }
         },
-        //We retun back the user that he wanted add
+        //We return back the user that he wanted add (was not add)
         usuario: new Usuario({
           nombre: req.body.nombre,
           email: req.body.email
@@ -77,6 +74,7 @@ we pass the id the user taht we want to update and the new values
       })
       return
     }
+
     Usuario.create({
       nombre: req.body.nombre,
       email: req.body.email,
@@ -88,7 +86,8 @@ we pass the id the user taht we want to update and the new values
           usuario: new Usuario()
         })
       } else {
-        nuevoUsuario.enviar_email_bienvenida();
+        //we send a email of welcom
+       // nuevoUsuario.enviar_email_bienvenida();
         res.redirect('/usuarios');
       }
     })

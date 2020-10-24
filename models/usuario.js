@@ -89,7 +89,7 @@ usuarioSchema.methods.reservar = function (biciId, desde, hasta, cb){
 
 
 //we add a method to send email
-suarioSchema.methods.enviar_email_bienvenida = function(cb) {
+usuarioSchema.methods.enviar_email_bienvenida = function(cb) {
    //We create the token 
     const token = new Token({_userId: this.id, token: crypto.randomBytes(16).toString('hex')})
     const email_destination = this.email;
