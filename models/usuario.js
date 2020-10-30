@@ -1,10 +1,14 @@
 var mongoose = require('mongoose');
 var Reserva = require('./reserva');
 var Schema = mongoose.Schema;
+//const transporter = require('../mailer/mailer');
+const Token = require('./token');
+const uniqueValidator = require('mongoose-unique-validator');
+let crypto = require('crypto');
+const nodemailer = require('nodemailer');
+
 const mailer = require('../mailer/mailer');
 
-
-const uniqueValidator = require('mongoose-unique-validator');
 
 const bcrypt = require('bcrypt');
 const saltRounds = 10;/*this allows us to encrypt more securely
@@ -40,7 +44,7 @@ var usuarioSchema = new Schema({
       passwordResetTokenExpires: Date, //Expires of token
       verificado: {
         type: Boolean,
-        default: false //the efault value will be faulse
+        default: false //the default value will be false
       }
     });
 
@@ -83,35 +87,66 @@ usuarioSchema.methods.reservar = function (biciId, desde, hasta, cb){
         hasta: hasta
     });
     
-    //We save the Recerva
+    //We save the Reserv
     reserva.save(cb);
 }
 
 
-//we add a method to send email
-usuarioSchema.methods.enviar_email_bienvenida = function(cb) {
-   //We create the token 
-    const token = new Token({_userId: this.id, token: crypto.randomBytes(16).toString('hex')})
+usuarioSchema.methods.enviar_email_bienvenida =  function () {
+    const token = new Token({ _userId: this.id, token: crypto.randomBytes(16).toString('hex') })
     const email_destination = this.email;
-    token.save((err) => {
-      if ( err ) { return console.log(err.message)}
-      //content of mail
-      const mailOptions = {
-        from: 'no-reply@redbicicletas.com',
-        to: email_destination,
-        subject: 'Verificacion de cuenta',
-        text: 'Hola,\n\n' 
-        + 'Por favor, para verificar su cuenta haga click en este link: \n' 
-        + 'http://localhost:5000'
-        + '\/token/confirmation\/' + token.token + '\n'
-      }
-  
-      //we send the message and its properties
-      mailer.sendMail(mailOptions, function(err){
-        if( err ) { return console.log(err.message) } 
-        console.log('Se ha enviado un email de bienvenida a: ' + email_destination)
-      })
-    })
-  }
+     //sendemail(111);
+
+      token.save(function (err) {
+        if (err) {
+            return console.log(err.message);
+        }
+        return console.log("Sent  it");
+    });
+    
+}
+
+
+usuarioSchema.methods.resetPassword = (cb) =>{
+    const token = new Token({_userId: this.id, token: crypto.randomBytes(16).toString('hex')});
+    const email_destination = this.email;
+    //sendemail(111);
+    token.save(function(err) {
+        if (err) { return cb(err); }
+    
+        cb(null);
+    });
+ 
+}
+
+
+function sendemail(token){
+// Step 1
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user:  'bicicletajonas@gmail.com', // TODO: your gmail account
+        pass:  'aguascalientes321' // TODO: your gmail password
+    }
+});
+
+// Step 2
+const mailOptions = {
+    from: 'bicicletajonas@gmail.com', // TODO: email sender
+    to: 'mogwamo@gmail.com', // TODO: email receiver
+    subject: 'Nodemailer - Test',
+    text: 'Wooohooo it works!!'
+};
+
+// Step 3
+transporter.sendMail(mailOptions, (err, data) => {
+    if (err) {
+         console.log('Error occurs',err);
+    }
+    console.log('Email sent!!!');
+});
+
+}
+
 
 module.exports = mongoose.model('Usuario', usuarioSchema);
