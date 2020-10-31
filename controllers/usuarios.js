@@ -77,20 +77,25 @@ we pass the id the user taht we want to update and the new values
     Usuario.create({
       nombre: req.body.nombre,
       email: req.body.email,
-      password: req.body.password
-    }, (err, nuevoUsuario) => {
+      password: req.body.password,
+
+     
+  }, function(err, nuevoUsuario) {
       if (err) {
-        res.render('usuarios/create', {
-          errors: err.errors,
-          usuario: new Usuario()
-        })
+          res.render('usuarios/create', {
+              errors: err.errors,
+              usuario: new Usuario({
+                  nombre: req.body.nombre,
+                  email: req.body.email,
+              })
+          });
       } else {
-        //we send a email of welcom 
-     //   nuevoUsuario.enviar_email_bienvenida(); //CREATE A ERROR
-        res.redirect('/usuarios');
+           nuevoUsuario.enviar_email_bienvenida();
+        // res.redirect('/usuarios');
       }
-    })
-  },
+  }
+);
+},
   delete: function (req, res, next) {
     Usuario.findByIdAndDelete(req.body.id, (err) => {
       if (err) {
