@@ -1,0 +1,17 @@
+  
+nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+  a.navbar-brand(href='#') Red Bicicletas
+  button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+    span.navbar-toggler-icon
+  #navbarSupportedContent.collapse.navbar-collapse
+    ul.navbar-nav.mr-auto
+      li.nav-item.active
+        a.nav-link(href='/')
+          | Home
+          span.sr-only (current)
+      li.nav-item
+        a.nav-link(href='/bicicletas') bicicletas
+      li.nav-item
+        a.nav-link(href='/usuarios' ) Usuarios
+    form.form-inline.my-2.my-lg-0
+      a.nav-link(href='/logout') cerrar sesión 

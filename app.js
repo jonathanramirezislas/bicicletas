@@ -4,7 +4,9 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const passport = require('./config/passport');
-const session = require('express-session')
+const session = require('express-session');
+const jwt = require('jsonwebtoken');
+const Usuario = require('./models/usuario');
 
 
 
@@ -15,8 +17,6 @@ const bicicletasRouter = require('./routes/bicicletas');
 const bicicletasAPIRouter = require('./routes/api/bicicletas');
 const usuariosAPIRouter = require('./routes/api/usuarios');
 const tokenRouter = require('./routes/token');
-
-
 
 
 const app = express();
@@ -60,8 +60,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/usuarios', usuariosRouter);
-app.use('/bicicletas', bicicletasRouter);
-app.use('/api/bicicletas', bicicletasAPIRouter);
+app.use('/bicicletas', loggedIn, bicicletasRouter);
+app.use('/api/bicicletas',validarUsuario, bicicletasAPIRouter);
 app.use('/api/usuarios', usuariosAPIRouter);
 app.use('/usuarios', usuariosRouter);
 app.use('/token', tokenRouter);
@@ -75,17 +75,18 @@ app.get('/login', (req, res)=>{
 
 app.post('/login', (req, res, next)=> {
   //method of passport
-  passport.authenticate('local', (err, user, info)=>{
-    //if there is a error
+  passport.authenticate('local', (err, usuario, info)=>{
+    //if there is a error & continue with the next method of middleware
     if(err) return next(err);
-    //if there is not a user , we render login and pass info
+    //if there is not a user return back to the same page(login) 
     if(!usuario) return res.render('session/login', {info});
     req.logIn(usuario, err =>{
       if(err) return next(err);
       //if everthing is ok redirect to home
       return res.redirect('/');
     });
-  }) (req, res, next);
+  })
+   (req, res, next);//we execute the passport.authenticate function in order to passport has reference to req, res, next
 })
 
 app.get('/logout', (req, res)=>{
@@ -98,7 +99,7 @@ app.get('/forgotPassword', (req, res)=>{
   res.render('session/forgotPassword')
 })
 
-app.post('/forgotPassword', (req, res)=>{
+app.post('/forgotPassword', (req, res, next)=>{
   Usuario.findOne({email: req.body.email}, (err, usuario)=>{
     if(!usuario) return res.render('session/forgotPassword', {info: {message: 'No existe la clave'}});
     
@@ -140,10 +141,6 @@ app.post('/resetPassword', (req, res)=>{
 //end of handle routes from app.js
 
 
-
-
-
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -159,5 +156,33 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
+
+
+function loggedIn(req, res, next) {
+  if (req.user) {
+    next();
+  } else {
+    console.log('user sin loguearse');
+    res.redirect('/login')
+  }
+}
+
+function validarUsuario(req, res, next) {
+  jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), function (err, decoded) {
+    if (err) {
+      res.json({
+        status: "error",
+        message: err.message,
+        data: null
+      });
+    } else {
+      req.body.userId = decoded.id
+      console.log('jwt verifyt: ', decoded);
+      next();
+    }
+  })
+}
 
 module.exports = app;

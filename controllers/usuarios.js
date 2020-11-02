@@ -86,7 +86,7 @@ we pass the id the user taht we want to update and the new values
         })
       } else {
         //we send a email of welcom 
-     //   nuevoUsuario.enviar_email_bienvenida(); //CREATE A ERROR
+        nuevoUsuario.enviar_email_bienvenida(); //CREATE A ERROR
         res.redirect('/usuarios');
       }
     })
