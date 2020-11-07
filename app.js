@@ -8,7 +8,7 @@ const passport = require('./config/passport');
 const session = require('express-session');
 const jwt = require('jsonwebtoken');
 const Usuario = require('./models/usuario');
-
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 
 
