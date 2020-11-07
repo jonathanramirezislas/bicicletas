@@ -48,6 +48,20 @@ if(process.env.NODE_ENV === 'development' ) {
 
 
 
+/*
+let store;
+
+  store = new MongoDBStore({
+    uri: process.env.MONGO_URI,
+    collection: 'sessions'
+  });
+  store.on('error', function(error){
+    assert.ifError(error);
+    assert.ok(false);
+  });
+*/
+
+
 
 //Conection to the DB
 const mongoDB = process.env.MONGO_URI;
