@@ -37,7 +37,7 @@ if(process.env.NODE_ENV === 'development' ) {
    store = new session.MemoryStore
 } else {
   store = new MongoDBStore({
-     store = new session.MemoryStore
+     //store = new session.MemoryStore
      /*
     uri: process.env.MONGO_URI,
     collection: 'sessions'
