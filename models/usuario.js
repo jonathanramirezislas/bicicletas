@@ -135,4 +135,42 @@ usuarioSchema.methods.resetPassword =  function(cb){
   })
 }
 
+//Method of AuthO Note contidition is the user
+usuarioSchema.statics.findOneOrCreateByGoogle = function findOneOrCreate(
+  condition,
+  cb
+) {
+  const self = this;//is use to don't loose the ref to the user in the other callback
+console.log("user",condition);
+
+  self.findOne(
+    {
+      $or: [{ googleId: condition.id }, { email: condition.emails[0].value }],
+    },
+    (err, result) => {
+      if (result) {// if user exist 
+        cb(err, result);//execute the callback with the user
+      } else { //success
+        let values = {};
+        values.id = condition.id;
+        values.email = condition.emails[0].value;
+        values.nombre = condition.displayName || "Sin nombre";
+        values.verificado = true;
+        values.password = condition.emails[0].value + "pass";// improve this 
+
+        //we create the user
+        self.create(values, (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+          return cb(err, result);
+        });
+      }
+    }
+  );
+}
+
+
+
+
 module.exports = mongoose.model('Usuario', usuarioSchema);
