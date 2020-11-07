@@ -29,7 +29,7 @@ const app = express();
 const mongoose = require('mongoose');
 
 
-let store
+let store;
 if(process.env.NODE_ENV === 'development' ) {
   //we save the session in the server (Note. If the server trun off the session is lost)
    store = new session.MemoryStore
