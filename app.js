@@ -37,11 +37,8 @@ if(process.env.NODE_ENV === 'development' ) {
    store = new session.MemoryStore
 } else {
   store = new MongoDBStore({
-     //store = new session.MemoryStore
-     /*
     uri: process.env.MONGO_URI,
     collection: 'sessions'
-    */
   });
   store.on('error', function(error){
     assert.ifError(error);
@@ -187,7 +184,7 @@ app.get(
   passport.authenticate("google", {
     scope: [
       "https://www.googleapis.com/auth/plus.login",
-      "https://www.googleapis.com/auth/plus.profile.emails.read",
+      "https://www.googleapis.com/auth/plus.profile.emails",
     ],
     accessType: "offline",
     approvalPrompt: "force",
