@@ -1,3 +1,4 @@
+require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -10,6 +11,7 @@ const Usuario = require('./models/usuario');
 
 
 
+
 //Routes
 const indexRouter = require('./routes/index');
 const usuariosRouter = require('./routes/usuarios');
@@ -19,10 +21,35 @@ const usuariosAPIRouter = require('./routes/api/usuarios');
 const tokenRouter = require('./routes/token');
 
 
+
+
+
+
 const app = express();
 const mongoose = require('mongoose');
+
+
+let store
+if(process.env.NODE_ENV === 'development' ) {
+  //we save the session in the server (Note. If the server trun off the session is lost)
+   store = new session.MemoryStore
+} else {
+  store = new MongoDBStore({
+    uri: process.env.MONGO_URI,
+    collection: 'sessions'
+  });
+  store.on('error', function(error){
+    assert.ifError(error);
+    assert.ok(false);
+  })
+}
+
+
+
+
 //Conection to the DB
-const mongoDB = process.env.MONGO_URI || 'mongodb://localhost/red_bicicletas';
+const mongoDB = process.env.MONGO_URI;
+
 mongoose.connect(mongoDB, {
   useCreateIndex: true,
   useUnifiedTopology:true,
@@ -35,8 +62,8 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error: '));
 
 
-//we save the session in the server (Note. If the server trun off the session is lost)
-const store = new session.MemoryStore;
+
+
 app.use(session({
   cookie: {maxAge: 240 * 60 * 60 * 1000}, //time for cookie
   store: store,//we save in store
@@ -67,6 +94,13 @@ app.use('/usuarios', usuariosRouter);
 app.use('/token', tokenRouter);
 
 
+app.use('/privacy_policy', function(req, res){
+ res.sendFile('public/policy_privacy.html');
+});
+
+app.use('/google956cd0be8278a9d8', function(req, res){
+  res.sendFile('public/google956cd0be8278a9d8.html');
+ });
 
 //Handle Routes from app.js
 app.get('/login', (req, res)=>{
@@ -150,7 +184,7 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.error = process.env.ENVIRONMENT === 'development' ? err : {};
 
   // render the error page
   res.status(err.status || 500);
