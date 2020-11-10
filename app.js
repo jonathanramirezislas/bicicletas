@@ -193,24 +193,15 @@ app.post('/resetPassword', (req, res)=>{
 
 
 //Login google
-app.get(
-  "/auth/google",
-  passport.authenticate("google", {
-    scope: [
-      "https://www.googleapis.com/auth/plus.login",
-      "https://www.googleapis.com/auth/plus.profile.emails",
-    ],
-    accessType: "offline",
-    approvalPrompt: "force",
-  })
-);
+app.get('/auth/google',
+  passport.authenticate('google', { scope: [
+    'https://www.googleapis.com/auth/plus.login',
+    'https://www.googleapis.com/auth/plus.profile.emails.read']}));
 
-app.get(
-  "/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
-  function (req, res) {
-    res.redirect("/");
-  }
+app.get('/auth/google/callback',passport.authenticate('google', {
+  successRedirect: '/',
+  failureRedirect: '/error'
+})
 );
 
 
