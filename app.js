@@ -204,6 +204,19 @@ app.get('/auth/google/callback',passport.authenticate('google', {
 })
 );
 
+//Login facebook
+app.get("/auth/facebook", passport.authenticate('facebook', {
+  scope: ['email']
+}));
+
+app.get('/auth/facebook/callback',
+  passport.authenticate('facebook', {
+    successRedirect: '/bicicletas',
+    failureRedirect: '/login'
+  })
+);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
