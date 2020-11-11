@@ -2,6 +2,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const Usuario = require('../models/usuario');
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const FacebookTokenStrategy = require('passport-facebook-token');
 
 
 passport.use(new LocalStrategy(
@@ -26,6 +27,20 @@ passport.use(new LocalStrategy(
 ));
 
 
+//facebook
+passport.use(new FacebookTokenStrategy({
+  clientID: process.env.FACEBOOK_ID,
+  clientSecret: process.env.FACEBOOK_SECRET,
+  fbGraphVersion: 'v3.0'
+}, function (accessToken, refreshToken, profile, done) {
+  console.log("FaceToken--profile", profile);
+  Usuario.findOneOrCreateByFacebook(profile, function (err, user) {
+    if (err) {
+      return done(err);
+    }
+    done(null, user);
+  });
+}));
 
 //docum. in google
 passport.use(
