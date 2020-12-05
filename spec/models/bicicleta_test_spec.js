@@ -20,7 +20,8 @@ describe('Testing Bicicletas', function(){
 
     //after is call each in each Test
   //Delete everthing from test Database
-    afterEach(function(done){
+   
+  afterEach(function(done){
       Bicicleta.deleteMany({}, function(err, success){
         done(); 
         if (err) console.log(err);
