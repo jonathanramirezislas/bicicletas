@@ -133,8 +133,8 @@ app.post('/login', (req, res, next)=> {
     if(!usuario) return res.render('session/login', {info});
     req.logIn(usuario, err =>{
       if(err) return next(err);
-      //if everthing is ok redirect to home
-      return res.redirect('/');
+      //if everthing is ok redirect to bicicletas
+      return res.redirect('/bicicletas');
     });
   })
    (req, res, next);//we execute the passport.authenticate function in order to passport has reference to req, res, next
