@@ -6,12 +6,12 @@
 
 [Login ](https://bicicletasjonas.herokuapp.com/login) https://bicicletasjonas.herokuapp.com/login
 
-Confunsion is a project for restaurants.
+Bicicletas is API to rent bikes around the city.
 
 ## 📢 Requirements
 - Node JS 12.16.1 _(Recommended)_
 - NPM 6.13.4 _(Recommended)_
-- JSON-SERVER 0.16.3  _(Recommended)_
+
 
 ## 🛠 Installation
 1. Clone this project.
